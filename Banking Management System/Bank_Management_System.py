@@ -1,7 +1,7 @@
 
 def id_exists(user_id):
     try:
-        f = open("/home/shamim/Desktop/ML/Project/user_information.txt", "r")
+        f = open("/home/shamim/Desktop/ML/Project/Banking Management System/user_information.txt", "r")
         for line in f:
             data = eval(line.strip())   # convert string list to list
             if data[0] == user_id:      # first element = id
@@ -18,7 +18,7 @@ def id_exists(user_id):
 def read_users():
     users = []
     try:
-        with open("/home/shamim/Desktop/ML/Project/user_information.txt", "r") as f:
+        with open("/home/shamim/Desktop/ML/Project/Banking Management System/user_information.txt", "r") as f:
             for line in f:
                 if line.strip():
                     users.append(eval(line.strip()))
@@ -29,7 +29,7 @@ def read_users():
 
 
 def write_users(users):
-    with open("/home/shamim/Desktop/ML/Project/user_information.txt", "w") as f:
+    with open("/home/shamim/Desktop/ML/Project/Banking Management System/user_information.txt", "w") as f:
         for user in users:
             f.write(str(user) + "\n")
 
@@ -55,7 +55,7 @@ def Creat_account():
 
     data = [id, password, phone_number, balance, name1, name2, f_f_n, f_s_n]
 
-    f = open("/home/shamim/Desktop/ML/Project/user_information.txt", "a")
+    f = open("/home/shamim/Desktop/ML/Project/Banking Management System/user_information.txt", "a")
     f.write(str(data) + "\n")
     f.close()
 
@@ -118,23 +118,100 @@ def  Delete_user_account():
 
 
 #4
-def Report():
-    print("Hello World")
+def Transection_history():
+    import ast
+
+    transactions = []
+    try:
+        with open("/home/shamim/Desktop/ML/Project/Banking Management System/Transfer.txt", "r") as f:
+            for line in f:
+                if line.strip():
+                    transactions.append(ast.literal_eval(line.strip()))
+    except FileNotFoundError:
+        print("No transaction history found.")
+        return
+
+    if not transactions:
+        print("No transactions available.")
+        return
+
+    # Header
+    print(f"{'No.':<5}{'Sender ID':<15}{'Receiver ID':<15}{'Amount':<10}")
+    print("-" * 50)
+
+    # Print each transaction
+    for i, transaction in enumerate(transactions, 1):
+        if isinstance(transaction, list) and len(transaction) == 3:
+            sender, receiver, amount = transaction
+            print(f"{i:<5}{sender:<15}{receiver:<15}{amount:<10}")
+        else:
+            print(f"{i}. Invalid transaction format: {transaction}")
+
+    print("-" * 50)
+
+# Example usage
+
 
 
 #5
 def view_user_information():
-     user_id = int(input("Enter your id : "))
-     found = False
-     users = read_users()
-     for user in users:
-        if user[0] == user_id :
+    user_id = int(input("Enter your ID: "))
+    users = read_users()  # This should return a list of users
+    found = False
+
+    for user in users:
+        if user[0] == user_id:
             found = True
-            print(f"\nId = [{user[0]}] \nContect number = [{user[2]}] \nBalance = [{user[3]}] \nFirst name = [{user[4]}] \nLast name = [{user[5]}] \nFather First name = [{user[6]}\nFather last name = [{user[7]}]] \nFather last name = [{user[7]}]" )
+            print("\nUser Information:")
+            print("-" * 50)
+            print(f"{'Field':<20}{'Value':<30}")
+            print("-" * 50)
+            print(f"{'ID':<20}{user[0]:<30}")
+            print(f"{'Contact Number':<20}{user[2]:<30}")
+            print(f"{'Balance':<20}{user[3]:<30}")
+            print(f"{'First Name':<20}{user[4]:<30}")
+            print(f"{'Last Name':<20}{user[5]:<30}")
+            print(f"{'Father First Name':<20}{user[6]:<30}")
+            print(f"{'Father Last Name':<20}{user[7]:<30}")
+            print("-" * 50)
             break
 
-     if not found:
-        print("User ID or password incorrect!")
+    if not found:
+        print("User ID not found!")
+
+#i 6 payment history 
+def payment_history():
+    import ast
+
+    transactions = []
+    try:
+        with open("/home/shamim/Desktop/ML/Project/Banking Management System/Report.txt", "r") as f:
+            for line in f:
+                if line.strip():
+                    transactions.append(ast.literal_eval(line.strip()))
+    except FileNotFoundError:
+        print("No Payment history found.")
+        return
+
+    if not transactions:
+        print("No payment available.")
+        return
+
+    # Header
+    print(f"{'No.':<5}{'Sender ID':<15}{'Amount':<10}{'BIll name':<15}{'Bill number':<15}")
+    print("-" * 65)
+
+    # Print each transaction
+    for i, transaction in enumerate(transactions, 1):
+        if isinstance(transaction, list) and len(transaction) == 4:
+            sender, amount,BIll_name , BIll_number = transaction
+            print(f"{i:<5}{sender:<15}{amount:<10}{BIll_name:<15}{BIll_number:<15}")
+        else:
+            print(f"{i}. Invalid payment format: {transaction}")
+
+    print("-" * 50)
+
+
 
 #ii 1 
 def Chack_balance():
@@ -259,10 +336,14 @@ def Send_money():
             new_balance = user[3]
             write_users(users)
             print(f"\t\t\nOld Balance = [{old_balance}] Transfer amount  = [{amount}] New balance = [{new_balance}]")
-            f = open("/home/shamim/Desktop/ML/Project/Transfer.txt", "a")
+            f = open("/home/shamim/Desktop/ML/Project/Banking Management System/Transfer.txt", "a")
             f.write(str(data) + "\n")
             f.close()
             print("Payment successfully!")
+            recevied  = read_users()
+            for rev in  recevied :
+                if(rev[0]==Received_user_id): rev[3] = rev[3] + amount
+                write_users( recevied)
             return 
         
     if not found :
@@ -273,7 +354,7 @@ def Admin():
     id = input("\t\t\nEnter your admin Id 1001 : ")
     password = input("Enter your Password shamim1212 :")
     flag = False
-    with open("/home/shamim/Desktop/ML/Project/Admin_Information.txt", "r") as f:
+    with open("//home/shamim/Desktop/ML/Project/Banking Management System/Admin_Information.txt", "r") as f:
      for line in f:
         parts = line.strip().split()  # split line by spaces
         chack_id = parts[0]                 # first item is ID
@@ -292,7 +373,8 @@ def Admin():
         print("3. Delete user account")
         print("4. View Transaction History ")
         print("5. User information ")
-        print("6. Exit")
+        print("6. Payment History ")
+        print("7. Exit")
 
         try:
             choice = int(input("Enter Your choice : "))
@@ -308,10 +390,12 @@ def Admin():
         elif choice == 3:
            Delete_user_account()
         elif choice == 4:
-          print("4. View Transaction History ")  
+         Transection_history() 
         elif choice == 5:
          view_user_information()
         elif choice == 6:
+            payment_history()
+        elif choice == 7 :
             break 
         else:
             print("Invalid choice, please try again!")
