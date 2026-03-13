@@ -1,0 +1,7 @@
+{
+    "user_file": "data/user_information.txt",
+    "transfer_file": "data/Transfer.txt",
+    "payment_file": "data/Report.txt",
+    "admin_file": "data/Admin_Information.txt",
+    "log_file": "logs/app.log"
+}
